@@ -38,15 +38,17 @@ const UserSignUp = () => {
             console.log("User created successfully");
             toast.success(response.data.message);
             navigate("/login");
+            setUserInfo({})
             setLoading(false)
           }else{
             console.log("User not created",response);
             toast.error(response.data.message);
+            setUserInfo({})
             setLoading(false)
           }
-          setLoading(false)
         } catch (error) {
           console.log("Some error occurred while registering user",error);
+          setUserInfo({})
         }
      }
     
@@ -125,7 +127,11 @@ const UserSignUp = () => {
           <label htmlFor="password">Password</label>
           <div className="w-full bg-[#FFFFFF] flex items-center  rounded-md">
             <input
-            disabled={loading}
+              minLength={6}
+              maxLength={10}
+              pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$" 
+              title='Password must be at least 6 characters long'
+              disabled={loading}
               placeholder="Enter password"
               onChange={onChangeHandler}
               name="password"

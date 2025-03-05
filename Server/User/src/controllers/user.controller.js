@@ -139,7 +139,10 @@ const logoutUser = async (req, res) => {
 
 const getUserDetails = async (req, res) => {
   try {
-      const user = req.user
+      const userId = req.user
+
+      const user = await User.findById(userId).select("-password -refreshToken")
+
       if(!user){
         return res.status(401).json({success:false, message:"Unauthorized request"})
       }

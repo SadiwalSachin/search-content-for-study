@@ -19,7 +19,7 @@ userRouter.route("/login").post([
 
 userRouter.route("/logout").post(logoutUser)
 
-userRouter.route("/get-user-details").post(authUser,getUserDetails)
+userRouter.route("/get-user-details").get(authUser,getUserDetails)
 userRouter.route("/verify-token").post(authUser)
 
 export default  userRouter

@@ -8,7 +8,7 @@ import ViewAllPyq from "./Pages/ViewAllPyq";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ProtectedRoute from "./components/ProtectedRoute";
-import UserProfile from "./components/UserProfile";
+import UserProfile from "./Pages/UserProfile";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { setAccessToken, setIsLoggedIn } from "./redux/Slices/authSlice";

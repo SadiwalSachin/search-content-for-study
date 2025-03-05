@@ -11,54 +11,72 @@ import { useDispatch } from "react-redux";
 import { logOut } from "../redux/Slices/authSlice";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import Loader from "./Loader";
 import { setData } from "../redux/Slices/userSlice";
 import { toast } from "react-toastify";
 
 const UserProfile = () => {
-
-  const token = useSelector((state) => state.authUser.accesssToken);
+  const token = localStorage.getItem("token");
 
   const [loading, setLoading] = useState(false);
+  const [userData, setUserData] = useState({});
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [userData, setUserData] = useState({});
+
   const logOutUser = () => {
-    localStorage.removeItem("accessToken");
+    localStorage.removeItem("token");
     dispatch(logOut());
     toast.success("User logout successfully");
     navigate("/");
   };
 
-  // useEffect(()=>{
-  //   setUserData(JSON.parse(sessionStorage.getItem("userData")))
-  // },[])
+  const getUserDetails = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/v1/user/get-user-details", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const userData =  response.data.user
+      setUserData(userData);
+      console.log(userData); 
+      
+    } catch (error) {
+        console.log("some error occurred while getting user details", error);
+    }
+  };
 
-  console.log(userData);
-  
+  useEffect(() => {
+    getUserDetails();
+  }, []);
+
 
   return (
     <>
-      {loading ? <Loader /> : ""}
+      {loading ? <h1>Loading</h1> : ""}
       <div className="w-full h-screen absolute  bg-[#FFFFFF] z-30 top-0 flex flex-col">
         <div className="w-full px-4 py-5 cursor-pointer h-[15vh] bg-[#F4F4F5]">
           <div className="w-full flex items-center justify-between ">
             <h2 className="text-[20px]" onClick={() => navigate(-1)}>
               <IoIosArrowBack />
             </h2>
-            <h2 className="text-[24px] font-semibold uppercase tracking-tighter">Profile</h2>
+            <h2 className="text-[24px] font-semibold uppercase tracking-tighter">
+              Profile
+            </h2>
           </div>
         </div>
-        <div className="w-full flex flex-col justify-end items-center h-[16vh] text-center relative">
+        <div className="w-full flex flex-col justify-end items-center text-center relative">
           <div className="absolute -top-14 left-[50%] -translate-x-1/2">
             <h2 className="text-[14vh]">
               <PiUserCircleLight />
             </h2>
           </div>
-          <h2 className="text-2xl font-semibold">{userData.fullName}</h2>
+          <h2 className="text-2xl mt-20 font-semibold">{userData?.fullName}</h2>
           <p className="mt-2 py-1 px-3 bg-gray-300 w-content items-center rounded-md">
-            {userData.email}
+            {userData?.email}
+          </p>
+          <p className="mt-2 py-1 px-3 bg-gray-300 w-content items-center rounded-md">
+            {userData?.branch}
           </p>
         </div>
         <div className="w-full h-[50%] mt-10">
@@ -70,10 +88,8 @@ const UserProfile = () => {
               <li className="flex items-center text-xl justify-between px-4 py-2">
                 <FcViewDetails />
                 <p className="w-[70%]">User Details</p>{" "}
-                <Link
-                  to="/userdetails"               
-                >
-                <MdKeyboardArrowRight className="cursor-pointer" />
+                <Link to="/userdetails">
+                  <MdKeyboardArrowRight className="cursor-pointer" />
                 </Link>
               </li>
               <li className="flex items-center text-xl justify-between px-4 py-2">

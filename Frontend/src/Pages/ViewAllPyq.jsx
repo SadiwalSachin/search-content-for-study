@@ -146,7 +146,7 @@ const ViewAllPyq = () => {
 
   return (
     <>
-      {loading ? <Loader /> : ""}
+      {loading ? <h1>Loading</h1> : ""}
       <div className="w-full bg-[#FFFFFF]">
         <div className="py-4 md:px-[4.6vw] p-[5vh] px-[4vh] w-full md:h-[23vh] ">
           <div className="w-[99%] h-full hidden bg-[#FFFFFF] border-[#18181B] border-2 rounded-xl md:flex items-center md:justify-normal flex-wrap gap-x-5 gap-y-2 justify-center md:px-10 md:gap-3 py-3 md:py-0">

@@ -5,8 +5,8 @@ import { RxCross1 } from 'react-icons/rx';
 import { useNavigate ,Link } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify';
-import { useSelector , useDispatch } from 'react-redux';
-import {setAccessToken , setIsLoggedIn} from "../redux/Slices/authSlice.js"
+import { useDispatch } from 'react-redux';
+import {setIsLoggedIn} from "../redux/Slices/authSlice.js"
 
 const UserLogin = () => {
 
@@ -41,7 +41,6 @@ const UserLogin = () => {
           console.log("User logged in successfully");
           toast.success(response.data.message);
           localStorage.setItem("token",response.data.token)
-          dispatch(setAccessToken(response.data.token))
           dispatch(setIsLoggedIn(true))
           navigate("/");
           setLoading(false)
@@ -52,6 +51,7 @@ const UserLogin = () => {
         }
         
       } catch (error) {
+        setLoading(false)
         console.error("Some error occurred while trying to login",error);
       }
 
@@ -76,6 +76,7 @@ const UserLogin = () => {
               <div className="flex flex-col w-full gap-y-2">
                 <label htmlFor="email">Email</label>
                 <input
+                disabled={loading}
                   required
                   onChange={onChangeHandler}
                   type="email"
@@ -91,6 +92,7 @@ const UserLogin = () => {
               <label htmlFor="password">Password</label>
               <div className="w-full bg-[#FFFFFF] flex items-center  rounded-md">
                 <input
+                disabled={loading}
                   placeholder="Enter password"
                   onChange={onChangeHandler}
                   name="password"
@@ -105,7 +107,7 @@ const UserLogin = () => {
                   {seePassword ? <FaEyeSlash /> : <IoMdEye />}
                 </h2>
               </div>
-              <button className="mt-4 bg-[#18181B] text-white py-2  rounded-md">
+              <button disabled={loading} className={`mt-4 bg-[#18181B] text-white py-2  rounded-md ${loading ? "opacity-50" : ""}`}>
                 Login
               </button>
                 <h2 className="flex gap-x-2 mt-3 ">

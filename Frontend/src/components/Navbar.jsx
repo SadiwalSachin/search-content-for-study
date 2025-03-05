@@ -24,9 +24,8 @@ const mobileVariants = {
 function Navbar() {
 
   const isLoggedIn = useSelector((state)=> {
-    // console.log(state);
     return state.authUser.isLoggedIn
-  }) || localStorage.getItem("token")
+  }) && localStorage.getItem("token")
 
   const [openMobileNav, setOpenMobileNav] = useState(false);
   const handleMobileMenu = () => {
