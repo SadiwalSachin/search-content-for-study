@@ -26,7 +26,7 @@ const AISearch = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        `http://localhost:4000/api/v1/search/gemini-ai`,
+        `https://search-content-pyq-service.onrender.com/api/v1/search/gemini-ai`,
         searchInput,
         {
           headers: {

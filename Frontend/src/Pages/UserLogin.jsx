@@ -35,7 +35,7 @@ const UserLogin = () => {
       try {
         setLoading(true)
         console.log("User is trying to login ");
-        const response = await axios.post("http://localhost:3000/api/v1/user/login",userInfo)
+        const response = await axios.post("https://search-content-user-service.onrender.com/api/v1/user/login",userInfo)
         console.log(response);
         if(response.data.success){
           console.log("User logged in successfully");
@@ -51,6 +51,7 @@ const UserLogin = () => {
         }
         
       } catch (error) {
+        toast.error(error.message);
         setLoading(false)
         console.error("Some error occurred while trying to login",error);
       }

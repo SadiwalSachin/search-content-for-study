@@ -25,7 +25,7 @@ const FindPlaylist = () => {
    try {
     setLoading(true)
      const response = await axios.post(
-       `http://localhost:4000/api/v1/search/search-on-yt`,
+       `https://search-content-pyq-service.onrender.com/api/v1/search/search-on-yt`,
        searchContent,
        {
         headers:{

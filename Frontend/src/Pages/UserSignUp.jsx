@@ -32,7 +32,7 @@ const UserSignUp = () => {
         setLoading(true)
         console.log("User trying to create account");
         try {
-          const response = await axios.post("http://localhost:3000/api/v1/user/register", userInfo)
+          const response = await axios.post("https://search-content-user-service.onrender.com/api/v1/user/register", userInfo)
           console.log("Response coming after trying to register",response);
           if(response.data.success) {
             console.log("User created successfully");
@@ -47,6 +47,7 @@ const UserSignUp = () => {
             setLoading(false)
           }
         } catch (error) {
+          toast.error(error.message);
           console.log("Some error occurred while registering user",error);
           setUserInfo({})
         }

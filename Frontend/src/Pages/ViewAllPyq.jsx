@@ -64,7 +64,7 @@ const ViewAllPyq = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:4000/api/v1/pyq/get-pyqs`,
+        `https://search-content-pyq-service.onrender.com/api/v1/pyq/get-pyqs`,
         {
           headers:{
             Authorization:`Bearer ${token}`

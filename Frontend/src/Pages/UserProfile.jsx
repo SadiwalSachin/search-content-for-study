@@ -32,7 +32,7 @@ const UserProfile = () => {
 
   const getUserDetails = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/v1/user/get-user-details", {
+      const response = await axios.get("https://search-content-user-service.onrender.com/api/v1/user/get-user-details", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
