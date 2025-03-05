@@ -20,7 +20,7 @@ const UserSignUp = () => {
     const [loading,setLoading] = useState(false)
 
     const onChangeHandler = (event) => {
-      console.log(event.target.value);
+      // console.log(event.target.value);
         const name = event.target.name;
         const value = event.target.value;
         setUserInfo((prev)=> ({...prev, [name]:value}));
@@ -28,27 +28,27 @@ const UserSignUp = () => {
 
     const onSubmitHandler = async (event) => {
         event.preventDefault();
-        console.log(userInfo);
+        // console.log(userInfo);
         setLoading(true)
-        console.log("User trying to create account");
+        // console.log("User trying to create account");
         try {
           const response = await axios.post("https://search-content-user-service.onrender.com/api/v1/user/register", userInfo)
-          console.log("Response coming after trying to register",response);
+          // console.log("Response coming after trying to register",response);
           if(response.data.success) {
-            console.log("User created successfully");
+            // console.log("User created successfully");
             toast.success(response.data.message);
             navigate("/login");
             setUserInfo({})
             setLoading(false)
           }else{
-            console.log("User not created",response);
+            // console.log("User not created",response);
             toast.error(response.data.message);
             setUserInfo({})
             setLoading(false)
           }
         } catch (error) {
           toast.error(error.message);
-          console.log("Some error occurred while registering user",error);
+          // console.log("Some error occurred while registering user",error);
           setUserInfo({})
         }
      }

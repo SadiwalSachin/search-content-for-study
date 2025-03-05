@@ -30,22 +30,22 @@ const UserLogin = () => {
     
     const onSubmitHandler = async(event) =>{
       event.preventDefault()
-      console.log(userInfo);
+      // console.log(userInfo);
       
       try {
         setLoading(true)
-        console.log("User is trying to login ");
+        // console.log("User is trying to login ");
         const response = await axios.post("https://search-content-user-service.onrender.com/api/v1/user/login",userInfo)
-        console.log(response);
+        // console.log(response);
         if(response.data.success){
-          console.log("User logged in successfully");
+          // console.log("User logged in successfully");
           toast.success(response.data.message);
           localStorage.setItem("token",response.data.token)
           dispatch(setIsLoggedIn(true))
           navigate("/");
           setLoading(false)
         } else {
-          console.log("User not logged in");
+          // console.log("User not logged in");
           toast.error(response.data.message);
           setLoading(false)
         }
@@ -53,7 +53,7 @@ const UserLogin = () => {
       } catch (error) {
         toast.error(error.message);
         setLoading(false)
-        console.error("Some error occurred while trying to login",error);
+        // console.error("Some error occurred while trying to login",error);
       }
 
     }

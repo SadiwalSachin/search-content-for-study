@@ -39,10 +39,10 @@ const UserProfile = () => {
       });
       const userData =  response.data.user
       setUserData(userData);
-      console.log(userData); 
+      // console.log(userData); 
       
     } catch (error) {
-        console.log("some error occurred while getting user details", error);
+        // console.log("some error occurred while getting user details", error);
     }
   };
 
