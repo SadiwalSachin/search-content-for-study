@@ -7,53 +7,60 @@ import { RiLogoutBoxLine } from "react-icons/ri";
 import { IoMdPhonePortrait } from "react-icons/io";
 import { FcViewDetails } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { logOut } from "../redux/Slices/authSlice";
+import { useDispatch , useSelector } from "react-redux";
 import axios from "axios";
-import { useSelector } from "react-redux";
-import { setData } from "../redux/Slices/userSlice";
+import { setUserData , setLogOut } from "../redux/Slices/userSlice";
 import { toast } from "react-toastify";
+import Loader from "../components/Loader";
 
 const UserProfile = () => {
-  const token = localStorage.getItem("token");
+  // const token = localStorage.getItem("token");
+  const userDetails = useSelector((state)=>state?.user?.userData)
 
   const [loading, setLoading] = useState(false);
-  const [userData, setUserData] = useState({});
+  // const [userDetails, setUserDetails] = useState({});
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+
   const logOutUser = () => {
     localStorage.removeItem("token");
-    dispatch(logOut());
+    dispatch(setLogOut());
     toast.success("User logout successfully");
     navigate("/");
   };
 
-  const getUserDetails = async () => {
-    try {
-      const response = await axios.get("https://search-content-user-service.onrender.com/api/v1/user/get-user-details", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const userData =  response.data.user
-      setUserData(userData);
-      // console.log(userData); 
+  // const getUserDetails = async () => {
+  //   try {
+  //     const response = await axios.get("https://search-content-user-service.onrender.com/api/v1/user/get-user-details", {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+  //     const data =  response.data.user
+  //     console.log(data); 
+  //     dispatch(setUserData(data))
+  //     setUserDetails(data);
       
-    } catch (error) {
-        // console.log("some error occurred while getting user details", error);
-    }
-  };
+  //   } catch (error) {
+  //     if(error.message === "Network Error"){
+  //       toast.error(`${error.message} : Try Again Later`)
+  //       navigate("/")
+  //     }
+  //     console.error(error);
+  //     console.log("some error occurred while getting user details", error);
+  //   }
+  // };
 
-  useEffect(() => {
-    getUserDetails();
-  }, []);
+  // useEffect(() => {
+  //   getUserDetails();
+  // }, []);
 
 
   return (
     <>
-      {loading ? <h1>Loading</h1> : ""}
+      {loading ? <Loader />: ""}
       <div className="w-full h-screen absolute  bg-[#FFFFFF] z-30 top-0 flex flex-col">
         <div className="w-full px-4 py-5 cursor-pointer h-[15vh] bg-[#F4F4F5]">
           <div className="w-full flex items-center justify-between ">
@@ -71,12 +78,12 @@ const UserProfile = () => {
               <PiUserCircleLight />
             </h2>
           </div>
-          <h2 className="text-2xl mt-20 font-semibold">{userData?.fullName}</h2>
+          <h2 className="text-2xl mt-20 font-semibold">{userDetails?.fullName}</h2>
           <p className="mt-2 py-1 px-3 bg-gray-300 w-content items-center rounded-md">
-            {userData?.email}
+            {userDetails?.email}
           </p>
           <p className="mt-2 py-1 px-3 bg-gray-300 w-content items-center rounded-md">
-            {userData?.branch}
+            {userDetails?.branch}
           </p>
         </div>
         <div className="w-full h-[50%] mt-10">

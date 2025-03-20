@@ -28,6 +28,9 @@ const userSchema = new mongoose.Schema(
       refreshToken: {
         type: String,
       },
+      semester:{
+        type:String
+      }
     },
     { timestamps: true }
 );

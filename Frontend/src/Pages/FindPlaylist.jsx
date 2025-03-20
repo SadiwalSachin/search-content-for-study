@@ -8,7 +8,7 @@ const FindPlaylist = () => {
   const [loading, setLoading] = useState(false);
 
   const pyqSearch = useSelector((state) => state.youtube);
-  console.log(pyqSearch);
+  // console.log(pyqSearch);
 
   const token = localStorage.getItem("token")
   const [data, setData] = useState([]);
@@ -35,14 +35,14 @@ const FindPlaylist = () => {
      );
  
      if (response) {
-       console.log("Youtube video has came");
+      //  console.log("Youtube video has came");
        setLoading(false)
        setData(response.data);
-       console.log(data);
+      //  console.log(data);
      }
    } catch (error) {
     setLoading(false)
-    console.log(error);
+    // console.log(error);
     
    }
   };
@@ -50,7 +50,7 @@ const FindPlaylist = () => {
   useEffect(() => {
     if (pyqSearch.query === "") {
     } else {
-      const searchContentOnYT = async () => {
+      const searchContentOnYTFirst = async () => {
         setLoading(true)
         const response = await axios.post(
           "https://searchcontent.onrender.com/prompt/search-on-yt",
@@ -58,19 +58,19 @@ const FindPlaylist = () => {
         );
 
         if (response) {
-          console.log("Youtube video has came");
+          // console.log("Youtube video has came");
           setLoading(false)
           setData(response.data);
-          console.log(data);
+          // console.log(data);
         }
       };
 
-      searchContentOnYT();
+      searchContentOnYTFirst();
     }
   }, []);
 
   useEffect(() => {
-    console.log(searchContent);
+    // console.log(searchContent);
   }, [searchContent]);
 
   const link = "";

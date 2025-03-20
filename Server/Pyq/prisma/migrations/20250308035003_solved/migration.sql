@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "PYQ" ADD COLUMN     "solved" BOOLEAN NOT NULL DEFAULT false;

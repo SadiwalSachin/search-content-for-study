@@ -5,7 +5,7 @@ import { SiInstagram } from "react-icons/si";
 const Footer = () => {
   return (
     <>
-      <div className="w-full md:h-[28vh] py-6 md:px-[4.5vw] p-[5vh] px-[4vh] bg-[#18181B] mt-20">
+      <div className="w-full md:h-[28vh] py-6 md:px-[4.5vw] p-[5vh] px-[4vh] bg-[#18181B] mt-10">
         <div className="w-full  flex flex-col md:flex md:flex-row md:items-center justify-between gap-y-6 md:gap-y-0 text-white border-b-[1px] border-white py-3">
           <div>
             <h2 className="text-xl font-semibold">SEARCH</h2>

@@ -12,11 +12,13 @@ import UserProfile from "./Pages/UserProfile";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { setAccessToken, setIsLoggedIn } from "./redux/Slices/authSlice";
-import UserDetails from "./components/UserDetails";
-import EditProfile from "./components/EditProfile";
+import UserDetails from "./Pages/UserDetails";
+import EditProfile from "./Pages/EditProfile";
 import UserLogin from "./Pages/UserLogin";
 import UserSignUp from "./Pages/UserSignUp";
-import Connect from "./Pages/Connect";
+import RaisedPyqForSolution from "./Pages/RaisedPyqForSolution";
+import ViewSolution from "./Pages/ViewSolution";
+
 
 function App() {
   const dispatch = useDispatch();
@@ -66,7 +68,8 @@ function App() {
           path="/updatepassword"
           element={<ProtectedRoute component={<EditProfile />} />}
         />
-        <Route path="/connect" element={<Connect/>}/>
+        <Route path="/rased-pyq" element={<RaisedPyqForSolution/>}/>
+        <Route path="/viewallpyq/view-solution/:pyqId" element={<ViewSolution/>}/>
       </Routes>
       <Footer />
     </>

@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "RaisedPyq" ALTER COLUMN "raisedByUser_ID" DROP NOT NULL,
+ALTER COLUMN "raisedByUser_NAME" DROP NOT NULL;
+
+-- AlterTable
+ALTER TABLE "Solution" ALTER COLUMN "solvedByUser_ID" DROP NOT NULL,
+ALTER COLUMN "solvedByUser_NAME" DROP NOT NULL;

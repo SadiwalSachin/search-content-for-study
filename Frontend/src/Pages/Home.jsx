@@ -34,7 +34,7 @@ const Home = () => {
   ];
 
   return (
-    <div className=" w-full flex flex-col items-center  bg-[#FFFFFF] ">
+    <div className=" w-full flex flex-col items-center  bg-[#FFFFFF] mb-20">
       <div className="w-full h-[55vh] md:h-[40vh] text-white  flex bg-[#18181B] flex-col items-center justify-center md:px-[4.5vw] px-[4vh]  ">
         <motion.h1 
         initial={{opacity:0,x:-200}}
@@ -92,6 +92,7 @@ const Home = () => {
         <div className="flex w-full mt-10 items-center gap-x-10 flex-wrap gap-y-10">
         {details.map((item, index) => (
             <motion.div
+            key={index}
             initial={{opacity:0}}
             transition={{duration:.7,ease:"easeInOut"}}
             whileInView={{opacity:1}}

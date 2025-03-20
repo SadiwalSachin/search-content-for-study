@@ -24,8 +24,11 @@ const mobileVariants = {
 function Navbar() {
 
   const isLoggedIn = useSelector((state)=> {
-    return state.authUser.isLoggedIn
+    return state?.user?.isLoggedIn
   }) && localStorage.getItem("token")
+
+
+  // const isLoggedIn = localStorage.getItem("token")
 
   const [openMobileNav, setOpenMobileNav] = useState(false);
   const handleMobileMenu = () => {
@@ -64,43 +67,21 @@ function Navbar() {
             };
           }}
           className="text-base"
-          to="/aiserach"
-        >
-          AI Search
-        </NavLink>
-        <NavLink
-          style={(e) => {
-            return {
-              color: e.isActive ? "orange" : "",
-            };
-          }}
-          className="text-base"
-          to="/findplaylist"
-        >
-          Find Playlist
-        </NavLink>
-        <NavLink
-          style={(e) => {
-            return {
-              color: e.isActive ? "orange" : "",
-            };
-          }}
-          className="text-base"
           to="/viewallpyq"
         >
-          All PYQs
+          All PYQ's
         </NavLink>
-        <NavLink
+        {/* <NavLink
           style={(e) => {
             return {
               color: e.isActive ? "orange" : "",
             };
           }}
           className="text-base"
-          to="/connect"
+          to="/rased-pyq"
         >
-          Connect
-        </NavLink>
+          Raise-PYQ
+        </NavLink> */}
       </div>
       <div className="flex">
       {isLoggedIn ? (
@@ -156,22 +137,16 @@ function Navbar() {
             </NavLink>
             <NavLink
               className="text-2xl hover:text-[27px] duration-300 "
-              to="/aiserach"
-            >
-              AI Search
-            </NavLink>
-            <NavLink
-              className="text-2xl hover:text-[27px] duration-300 "
-              to="/findplaylist"
-            >
-              Find Playlist
-            </NavLink>
-            <NavLink
-              className="text-2xl hover:text-[27px] duration-300 "
               to="/viewallpyq"
             >
               All PYQs
             </NavLink>
+            {/* <NavLink
+          className="text-2xl hover:text-[27px] duration-300 "
+          to="/rased-pyq"
+        >
+          Raise-PYQ
+        </NavLink> */}
           </div>
         </motion.div>
       </AnimatePresence>

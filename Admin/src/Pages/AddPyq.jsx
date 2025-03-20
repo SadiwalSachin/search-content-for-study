@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Loader from "../components/Loader";
 
 const AddPyq = () => {
+  const [loading, setLoading] = useState(false);
   const [questionImage, setQuestionImage] = useState("");
   const [data, setData] = useState({
     question: "",
@@ -15,7 +17,8 @@ const AddPyq = () => {
     repeated: 0,
     marks:"",
     collegeYear:"",
-    branch:""
+    branch:"",
+    semester:null
   });
 
   const onChnageHandler = (event) => {
@@ -26,46 +29,54 @@ const AddPyq = () => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    const formData = new FormData();
-    formData.append("question", data.question);
-    formData.append("unit", data.unit);
-    formData.append("examType", data.examType);
-    formData.append("examYear", data.examYear);
-    formData.append("midSemNumber", data.midSemNumber);
-    formData.append("topic", data.topic);
-    formData.append("subjectCode", data.subjectCode);
-    formData.append("repeated", data.repeated);
-    formData.append("image", questionImage);
-    formData.append("marks",data.marks)
-    formData.append("collegeYear",data.collegeYear),
-    formData.append("branch",data.branch)
+    // const formData = new FormData();
+    // formData.append("question", data.question);
+    // formData.append("unit", data.unit);
+    // formData.append("examType", data.examType);
+    // formData.append("examYear", data.examYear);
+    // formData.append("midSemNumber", data.midSemNumber);
+    // formData.append("topic", data.topic);
+    // formData.append("subjectCode", data.subjectCode);
+    // formData.append("repeated", data.repeated);
+    // formData.append("image", questionImage);
+    // formData.append("marks",data.marks)
+    // formData.append("collegeYear",data.collegeYear),
+    // formData.append("branch",data.branch)
 
+
+    setData((data)=>({...data,["image"]:""}))
+    console.log(data);
+    setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:6767/pyq/addpyq",
-        formData
+        "http://localhost:4000/api/v1/pyq/add-pyq",
+        data
       );
 
       if (response) {
         toast.success(response.data.message);
+        setLoading(false)
         console.log(response);
       } else {
+        setLoading(false)
         console.log("Axios request failed of saving question");
       }
     } catch (error) {
+      setLoading(false);
       toast.error(error.message);
       console.log("error during question saving : ", error);
       console.log(error.message);
     }
   };
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+  // useEffect(() => {
+  //   console.log(data);
+  // }, [data]);
 
   return (
     <>
-      <div className=" py-6 md:px-[4.5vw] p-[5vh] px-[4vh] w-full  bg-[#27272A] relative">
+    {loading ? <Loader/> : ""}
+      <div className=" py-6 md:px-[4.5vw] p-[5vh] px-[4vh] w-full  bg-[#27272A]">
         <h1 className="md:text-[2.5vw] text-xl text-center text-white">
           Add New Questions
         </h1>
@@ -253,7 +264,7 @@ const AddPyq = () => {
               <label className="w-[full] text-md text-white" htmlFor="subjectCode">
                 Subject Code
               </label>
-              <select
+              <input
                 placeholder="Enter Subject"
                 type="text"
                 id="subjectCode"
@@ -262,16 +273,22 @@ const AddPyq = () => {
                 onChange={onChnageHandler}
                 className="outline-none p-2 rounded-md mt-3 w-full text-black"
               >
-                <option value="Enter Subject Code">Enter Subject Code</option>
-                <option value="EC-304">EC-304</option>
-                <option value="EC-302">EC-302</option>
-                <option value="BT-119">BT-119</option>
-                <option value="BT-207">BT-207</option>
-                <option value="BT-201">BT-201</option>
-                <option value="BT-201">BT-201</option>
-                <option value="BT-201">BT-201</option>
-
-              </select>
+              </input>
+            </div>
+            <div className="w-[50%]">
+              <label className="w-[full] text-md text-white" htmlFor="semester">
+                Semester
+              </label>
+              <input
+                placeholder="Enter Semester"
+                type="number"
+                id="semester"
+                name="semester"
+                value={data.semester}
+                onChange={onChnageHandler}
+                className="outline-none p-2 rounded-md mt-3 w-full text-black"
+              >
+              </input>
             </div>
             <div className="w-[50%]">
               <label className="w-[full] text-md text-white" htmlFor="collegeYear">

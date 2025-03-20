@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getUserDetails, loginUser, logoutUser, registerUser } from "../controllers/user.controller.js";
+import { getUserDetails, loginUser, logoutUser, registerUser, updateUserDetails } from "../controllers/user.controller.js";
 import {body , validationResult} from "express-validator"
 import authUser from "../middlewares/authUser.middleware.js";
 
@@ -17,9 +17,10 @@ userRouter.route("/login").post([
     body("password").isLength({min: 6}).withMessage("password must be at least 6 characters long"),
 ],loginUser)
 
-userRouter.route("/logout").post(logoutUser)
+userRouter.route("/logout").post(authUser,logoutUser)
 
 userRouter.route("/get-user-details").get(authUser,getUserDetails)
+userRouter.route("/update-user-details").post(authUser,updateUserDetails)
 userRouter.route("/verify-token").post(authUser)
 
 export default  userRouter

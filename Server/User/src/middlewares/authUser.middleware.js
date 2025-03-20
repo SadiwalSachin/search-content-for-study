@@ -13,21 +13,21 @@ export default async function authUser(req, res, next) {
     try {
         const incomingToken = req.cookie?.accessToken || req.header("Authorization")?.replace("Bearer ","")
         
-        console.log("Incoming Token",incomingToken);
+        // console.log("Incoming Token",incomingToken);
         
         if(!incomingToken){
             return res.status(401).json({success:false,message:"Unauthorized request"})
         }
 
         const decodedToken = jwt.verify(incomingToken, PUBLIC_KEY , {algorithms:["RS256"]})
-        console.log("decoded token: " + decodedToken);
+        // console.log("decoded token: " + decodedToken);
 
         req.user = decodedToken?._id
 
         next()
     } catch (error) {
-        console.log("Error while verifying JWT Token in auth middleware")
-        console.log(error)
+        // console.log("Error while verifying JWT Token in auth middleware")
+        // console.log(error)
         return res.json({success:false,message:"Token verification failed"})
     }
 }

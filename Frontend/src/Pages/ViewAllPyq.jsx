@@ -5,151 +5,186 @@ import { useDispatch, useSelector } from "react-redux";
 import { setFilter } from "../redux/Slices/pyqSlice";
 import Loader from "../components/Loader";
 import { IoClose } from "react-icons/io5";
-import { url } from "../Constants/constants";
+import {useInView} from "react-intersection-observer"
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const ViewAllPyq = () => {
-  const [loading, setLoading] = useState(false);
-
-  const brnachCode = [
-    {
-      branch: "ECE",
-      code: [
-        "EC-211",
-        "EC-302",
-        "EC-303",
-        "EC-212",
-        "EC-305",
-        "EC-308",
-        "EC-304",
-      ],
-    },
-    {
-      branch: "ME",
-      code: [
-        "ME-301",
-        "ME-302",
-        "ME-303",
-        "ME-304",
-        "ME-305",
-        "ME-306",
-        "ME-308",
-      ],
-    },
-    {
-      branch: "IT",
-      code: [
-        "IT-301",
-        "IT-302",
-        "IT-303",
-        "IT-304",
-        "IT-305",
-        "IT-309",
-        "IT-310",
-      ],
-    },
-  ];
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
   const [showMobileFilter, setShowMobileFilter] = useState(false);
+  const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token")
 
-  const dispatch = useDispatch();
-  const filters = useSelector((state) => state.pyq);
+    // to display branch code
+    const brnachCode = [
+      {
+        branch: "ECE",
+        code: [
+          "EC-211",
+          "EC-302",
+          "EC-303",
+          "EC-212",
+          "EC-305",
+          "EC-308",
+          "EC-304",
+        ],
+      },
+      {
+        branch: "ME",
+        code: [
+          "ME-301",
+          "ME-302",
+          "ME-303",
+          "ME-304",
+          "ME-305",
+          "ME-306",
+          "ME-308",
+        ],
+      },
+      {
+        branch: "IT",
+        code: [
+          "IT-301",
+          "IT-302",
+          "IT-303",
+          "IT-304",
+          "IT-305",
+          "IT-309",
+          "IT-310",
+        ],
+      },
+    ];
+    
 
-  // console.log("filter state ki value :", filters);
+  const userDataForInitialFilter = useSelector((state) => state?.user?.userData)
+
+  dispatch(setFilter({name:"branch",value:userDataForInitialFilter?.branch}))
+  dispatch(setFilter({name:"semester",value:userDataForInitialFilter?.semester}))
+
+
+  const filters = useSelector((state) => state?.pyq);
+
+
+  const raisedPyq = useSelector((state) => state?.raisedPyq?.raisedPyq);
 
   const [allPyq, setAllPyq] = useState([]);
   const [filteredPyq, setFilteredPyq] = useState([]);
 
-  const allPyqData = async () => {
+  const [page,setPage] =useState(1)
+  const [hasMore, setHasMore] = useState(true)
+  const {ref , inView} = useInView()
+
+  // console.log("filters",filters);
+  
+  const fetchPyqData = async () => {
+    if(!hasMore) return
     try {
       setLoading(true);
       const response = await axios.get(
-        `https://search-content-pyq-service.onrender.com/api/v1/pyq/get-pyqs`,
+        `https://search-content-pyq-service.onrender.com/api/v1/pyq/get-pyqs?page=${page}&limit=5&branch=${filters?.branch}&semester=${filters?.semester}`,
         {
           headers:{
             Authorization:`Bearer ${token}`
           }
         },
       );
-
-      if (response) {
-        console.log("all pyq fetched");
-        console.log("response is there :", response);
-        setAllPyq(response.data.data);
-        setLoading(false);
+      if(response?.data?.data?.length == 0) {
+        setHasMore(false)
+        setLoading(false)
+      } else if  (response.data.success) {
+        // console.log("all pyq fetched");
+        // console.log("response is there :", response);
+        if(response.data.data.length>0){
+          const newData = [...allPyq , ...response?.data?.data]
+          setAllPyq((prevData)=>[...prevData, ...response?.data?.data]);
+          setFilteredPyq(newData)
+          setPage((prev)=>prev+1)
+          setLoading(false);
+        }
+        
       }
     } catch (error) {
       setLoading(false);
-      console.log("some error occured while fetching all pyq");
-      console.log(error);
+      if(error.message === "Network Error"){
+        toast.error(`${error.message} : Try Again Later`)
+        navigate("/")
+      }
+      // console.log("some error occured while fetching all pyq");
+      // console.log(error);
     }
   };
 
+  // initial fetch
   useEffect(() => {
-    allPyqData();
-  }, []);
+    fetchPyqData();
+  }, [raisedPyq]);
+  
+  useEffect(()=>{
+    if(inView && !loading){
+      // console.log("loading");
+      if(hasMore){
+        // console.log("More pyq fetching");
+        
+        fetchPyqData()
+      }
+    }
+  },[inView])
 
-  useEffect(() => {
-    const filterPYQ = () => {
-      let filtered = allPyq;
+  // function applyFilters(){
+  //   console.log(filters);
+  //   let filteredPyqData = [...allPyq]
 
-      if (filters.collegeYear) {
-        filtered = filtered.filter(
-          (pyq) => pyq.collegeYear === filters.collegeYear
-        );
-      }
-      if (filters.collegeYear == 1) {
-        dispatch(setFilter({ name: "branch", value: "" }));
-        filtered = filtered.filter(
-          (pyq) => pyq.collegeYear === filters.collegeYear
-        );
-      }
-      if (filters.branch) {
-        filtered = filtered.filter((pyq) => pyq.branch === filters.branch);
-      }
-      if (filters.subjectCode) {
-        filtered = filtered.filter(
-          (pyq) => pyq.subjectCode === filters.subjectCode
-        );
-      }
-      if (filters.unit) {
-        if (filters.unit == "All") {
-        } else {
-          filtered = filtered.filter((pyq) => pyq.unit == filters.unit);
-        }
-      }
-      if (filters.examType) {
-        filtered = filtered.filter((pyq) => pyq.examType === filters.examType);
-      }
-      if (filters.examYear) {
-        filtered = filtered.filter((pyq) => pyq.examYear === filters.examYear);
-      }
-      if (filters.MidSem) {
-        filtered = filtered.filter((pyq) => pyq.MidSem == filters.MidSem);
-      }
-      if (filters.marks) {
-        if (filters.marks === "All") {
-        } else {
-          filtered = filtered.filter((pyq) => pyq.marks == filters.marks);
-        }
-      }
+  //   console.log("Filter function is running and updated filters are coming",filters);
+    
 
-      setFilteredPyq(filtered);
-    };
+  //   if(filters.branch){
+  //    filteredPyqData= filteredPyqData?.filter((pyq)=>pyq?.branch === filters?.branch)
+  //   }
+  //   if(filters?.subjectCode){
+  //     filteredPyqData = filteredPyqData?.filter((pyq)=>pyq?.subjectCode === filters?.subjectCode)
+  //   }
+  //   if(filters?.unit){
+  //     if(filters?.unit === "All"){
 
-    filterPYQ();
-  }, [filters, allPyq]);
+  //     }else {
+  //       filteredPyqData = filteredPyqData?.filter((pyq)=>parseInt(pyq?.unit) === filters?.unit)
+  //     }
+  //   }
+  //   if(filters?.examType){
+  //     filteredPyqData = filteredPyqData.filter((pyq)=>pyq?.examType === filters?.examType)
+  //   }
+  //   if(filters?.examYear){
+  //     filteredPyqData = filteredPyqData.filter((pyq)=>pyq?.examYear === filters?.examYear)
+  //   }
+  //   if(filters?.midSem){
+  //     filteredPyqData = filteredPyqData.filter((pyq)=>parseInt(pyq?.midSemNumber) === filters?.midSem)
+  // }
+  // if(filters?.marks){
+  //   if(filters?.marks === "All"){
 
-  const handleFilterChange = (e) => {
-    dispatch(setFilter({ name: e.target.name, value: e.target.value }));
-  };
+  //   }else{
+  //     filteredPyqData = filteredPyqData.filter((pyq)=> pyq?.marks === parseInt(filters?.marks))
+  //   }
+  //   setFilteredPyq(filteredPyqData)
+  // }}
+
+  // const handleFilterChange = (e) => {
+  //   dispatch(setFilter({ name: e.target.name, value: e.target.value }));
+  // };
+
+  // function handleApplyFilters (){
+  //   applyFilters()
+  // }
+  // console.log("Filtered PYQ",filteredPyq);
+  
 
   return (
     <>
-      {loading ? <h1>Loading</h1> : ""}
+      {loading ? <Loader/> : ""}
       <div className="w-full bg-[#FFFFFF]">
-        <div className="py-4 md:px-[4.6vw] p-[5vh] px-[4vh] w-full md:h-[23vh] ">
-          <div className="w-[99%] h-full hidden bg-[#FFFFFF] border-[#18181B] border-2 rounded-xl md:flex items-center md:justify-normal flex-wrap gap-x-5 gap-y-2 justify-center md:px-10 md:gap-3 py-3 md:py-0">
+        {/* <div className="py-4 md:px-[4.6vw] p-[5vh] px-[4vh] w-full md:h-[23vh] ">
+          {/* <div className="w-[99%] h-full hidden bg-[#FFFFFF] border-[#18181B] border-2 rounded-xl md:flex items-center md:justify-normal flex-wrap gap-x-5 gap-y-2 justify-center md:px-10 md:gap-3 py-3 md:py-0">
             <div className="border-2 border-[#18181B] rounded-md md:px-4 md:py-2 px-1">
               <h2 className="md:font-semibold">College Year</h2>
               <select
@@ -298,10 +333,13 @@ const ViewAllPyq = () => {
                 <option value="10">10</option>
               </select>
             </div>
-          </div>
+            {/* <button onClick={handleApplyFilters} className="border-2 border-[#18181B] rounded-md md:px-4 md:py-2 px-1">
+              Apply Filters             
+            </button> */}
+          {/* </div> */} 
 
           {/* Mobile Filter */}
-          <div className="flex flex-col md:hidden">
+          {/* <div className="flex flex-col md:hidden">
             <div className="flex justify-between">
               <h2
                 onClick={() => setShowMobileFilter((prev) => !prev)}
@@ -472,16 +510,19 @@ const ViewAllPyq = () => {
             ) : (
               ""
             )}
-          </div>
-        </div>
+          </div> */}
+        {/* </div>  */}
         <div className="py-6 md:px-[4.5vw] p-[5vh] px-[4vh] bg-[#FFFFFF] w-full flex-col flex gap-y-5 h-[80vh] no-scrollbar overflow-auto">
-          {allPyq.map((item, index) => (
+          {filteredPyq?.map((item, index) => (
             <PyqCard data={item} key={index} index={index} />
           ))}
+        {/* {loading && <Loader />} */}
+        {!hasMore ? <h2>No more data</h2> : ""}
+        <div ref={ref} className="h-10"></div>
         </div>
       </div>
     </>
   );
-};
+}
 
-export default ViewAllPyq;
+export default ViewAllPyq

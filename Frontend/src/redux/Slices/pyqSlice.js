@@ -8,7 +8,8 @@ const initialState = {
     midSem:"",
     marks:"",
     unit:"",
-    branch:"ECE"
+    branch:"ECE",
+    semester:""
 }
 
 const pyqSlice = createSlice({

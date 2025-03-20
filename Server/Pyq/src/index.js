@@ -7,17 +7,17 @@ dotenv.config();
 
 const numCPUs = os.cpus().length;
 
-console.log("length of cpus is", numCPUs);
+// console.log("length of cpus is", numCPUs);
 
 if (cluster.isMaster) {
-  console.log(`Master process ${process.pid} is running`);
+  // console.log(`Master process ${process.pid} is running`);
 
   for (let i = 0; i < numCPUs; i++) {
     cluster.fork();
   }
 
   cluster.on("exit", function (worker, code, signal) {
-    console.log(`Worker died. Starting a new one...`);
+    // console.log(`Worker died. Starting a new one...`);
     cluster.fork();
   });
 } else {
